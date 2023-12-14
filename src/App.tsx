@@ -1,9 +1,14 @@
+import MemoTask from './components/Task/Task';
+import Layout from './containers/Layout/Layout';
+
 const App = () => {
 
 
   return (
-    <div className="text-bg-info">Hello</div>
-  )
+    <Layout>
+      <MemoTask title="Title" isDone={true}/>
+    </Layout>
+  );
 };
 
-export default App
+export default App;
