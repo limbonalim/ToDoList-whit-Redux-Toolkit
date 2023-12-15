@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {RootState} from '../../app/store';
 import {changeOldTaskInToDo, deleteTaskFromToDo, fetchToDo} from '../../containers/Layout/ToDoThunks';
@@ -11,13 +11,16 @@ interface Props {
 
 const MemoTask: React.FC<Props> = React.memo(function Task({id, title, isDone}) {
   const dispatch: RootState = useDispatch();
-
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isChanging, setIsChanging] = useState<boolean>(false);
   const handleChange = async () => {
+    setIsChanging(true);
     await dispatch(changeOldTaskInToDo(id));
     dispatch(fetchToDo());
   };
 
   const handleDelete = async () => {
+    setIsDeleting(true);
     await dispatch(deleteTaskFromToDo(id));
     dispatch(fetchToDo());
   };
@@ -29,6 +32,7 @@ const MemoTask: React.FC<Props> = React.memo(function Task({id, title, isDone}) 
         <button
           className="btn btn-outline-danger"
           onClick={handleDelete}
+          disabled={isDeleting}
         >Delete
         </button>
         <div className="form-check">
@@ -37,6 +41,7 @@ const MemoTask: React.FC<Props> = React.memo(function Task({id, title, isDone}) 
             type="checkbox"
             checked={isDone}
             onChange={handleChange}
+            disabled={isChanging}
           />
         </div>
       </div>

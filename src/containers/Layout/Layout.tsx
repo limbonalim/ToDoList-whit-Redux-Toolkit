@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FormEvent, PropsWithChildren} from 'react';
+import React, {ChangeEvent, FormEvent, PropsWithChildren, useState} from 'react';
 import {change, refresh, ToDoState} from './ToDoSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../app/store';
@@ -11,18 +11,21 @@ interface Props extends PropsWithChildren {
 const Layout: React.FC<Props> = ({children}) => {
   const state: ToDoState = useSelector((state: RootState) => state.toDo);
   const dispatch: RootState = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {value} = event.target;
-    dispatch(change(value))
-  }
+    dispatch(change(value));
+  };
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
     await dispatch(addTaskInToDo());
-    dispatch(fetchToDo());
-    dispatch(refresh())
-  }
+    await dispatch(fetchToDo());
+    dispatch(refresh());
+    setIsSubmitting(false);
+  };
 
   return (
     <div className="container">
@@ -38,6 +41,7 @@ const Layout: React.FC<Props> = ({children}) => {
             <button
               className="btn btn-outline-success"
               type="submit"
+              disabled={isSubmitting}
             >Add
             </button>
           </div>

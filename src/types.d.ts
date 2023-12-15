@@ -1,8 +1,8 @@
 export interface ApiTasks {
-  [id: string]: Task
+  [id: string]: Task;
 }
 
-export interface ApiTask extends Task{
+export interface ApiTask extends Task {
   id: string;
 }
 
