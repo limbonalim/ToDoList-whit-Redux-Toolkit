@@ -1,18 +1,19 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import axiosApi from '../../axios-api';
-import {ApiTask, ApiTasks, Task} from '../../types';
 import {RootState} from '../../app/store';
+import {ApiTasks, MutationTask, Task} from '../../types';
 
-export const fetchToDo = createAsyncThunk<ApiTask[]>(
+export const fetchToDo = createAsyncThunk<MutationTask[]>(
   'toDo/fetch',
   async () => {
     const response = await axiosApi.get<ApiTasks | null>('/tasks.json');
     if (response.data) {
       const keys: string[] = Object.keys(response.data);
-      return keys.map((id: string): ApiTask => {
+      return keys.map((id: string): MutationTask => {
         return {
           ...response.data[id],
-          id
+          id,
+          isDeleting: false,
         };
       });
     } else {
@@ -41,7 +42,7 @@ export const changeOldTaskInToDo = createAsyncThunk<void, string, { state: RootS
   async (id, thunkAPI) => {
     const index: number = thunkAPI.getState().toDo.list.findIndex((task) => task.id === id);
     if (index >= 0) {
-      const task: ApiTask = thunkAPI.getState().toDo.list[index];
+      const task: MutationTask = thunkAPI.getState().toDo.list[index];
       const newTask: Task = {
         title: task.title,
         isDone: !task.isDone,

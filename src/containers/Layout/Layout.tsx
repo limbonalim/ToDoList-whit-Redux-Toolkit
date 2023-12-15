@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FormEvent, PropsWithChildren, useState} from 'react';
-import {change, refresh, ToDoState} from './ToDoSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import {change, refresh, ToDoState} from './ToDoSlice';
 import {RootState} from '../../app/store';
 import {addTaskInToDo, fetchToDo} from './ToDoThunks';
 

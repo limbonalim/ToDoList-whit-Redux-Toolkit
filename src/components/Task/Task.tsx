@@ -1,18 +1,22 @@
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../app/store';
-import {changeOldTaskInToDo, deleteTaskFromToDo, fetchToDo} from '../../containers/Layout/ToDoThunks';
+import {changeOldTaskInToDo, fetchToDo} from '../../containers/Layout/ToDoThunks';
+import {openModal, setIsDeleting, ToDoState} from '../../containers/Layout/ToDoSlice';
+import {DeletingTask} from '../../types';
 
 interface Props {
   id: string;
   title: string;
   isDone: boolean;
+  isDeleting: boolean;
 }
 
-const MemoTask: React.FC<Props> = React.memo(function Task({id, title, isDone}) {
+const MemoTask: React.FC<Props> = React.memo(function Task({id, title, isDone, isDeleting}) {
   const dispatch: RootState = useDispatch();
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const state: ToDoState = useSelector((state: RootState) => state.toDo);
   const [isChanging, setIsChanging] = useState<boolean>(false);
+
   const handleChange = async () => {
     setIsChanging(true);
     await dispatch(changeOldTaskInToDo(id));
@@ -20,9 +24,15 @@ const MemoTask: React.FC<Props> = React.memo(function Task({id, title, isDone}) 
   };
 
   const handleDelete = async () => {
-    setIsDeleting(true);
-    await dispatch(deleteTaskFromToDo(id));
-    dispatch(fetchToDo());
+    const index: number = state.list.findIndex((task) => task.id === id);
+    if (index >= 0) {
+      const task: DeletingTask = {
+        index,
+        id
+      };
+      dispatch(setIsDeleting(task));
+    }
+    dispatch(openModal(id));
   };
 
   return (

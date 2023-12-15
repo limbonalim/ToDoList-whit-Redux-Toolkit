@@ -6,6 +6,7 @@ import MemoTask from './components/Task/Task';
 import {fetchToDo} from './containers/Layout/ToDoThunks';
 import {RootState} from './app/store';
 import {closeError, ToDoState} from './containers/Layout/ToDoSlice';
+import DeletingModal from './components/DeletingModal/DeletingModal';
 
 const App = () => {
   const state: ToDoState = useSelector((state: RootState) => state.toDo);
@@ -23,6 +24,7 @@ const App = () => {
         id={task.id}
         title={task.title}
         isDone={task.isDone}
+        isDeleting={task.isDeleting}
       />)));
   }, [state.list]);
 
@@ -39,6 +41,7 @@ const App = () => {
 
   return (
     <>
+      <DeletingModal></DeletingModal>
       {state.isError ? error : null}
       <Layout>
         {state.isLoading ? loading : tasks}

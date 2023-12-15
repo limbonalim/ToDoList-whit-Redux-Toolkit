@@ -1,14 +1,16 @@
 import {
   ActionReducerMapBuilder,
   createSlice,
-  Draft,
+  Draft, PayloadAction,
 } from '@reduxjs/toolkit';
-import {ApiTask, Task} from '../../types';
-import {fetchToDo} from './ToDoThunks';
 import {RejectedAction} from '@reduxjs/toolkit/dist/query/core/buildThunks';
+import {fetchToDo} from './ToDoThunks';
+import {DeletingTask, MutationTask, Task} from '../../types';
 
 export interface ToDoState {
-  list: ApiTask[];
+  list: MutationTask[];
+  isOpenModal: boolean;
+  currentDeletingTask: DeletingTask;
   isLoading: boolean;
   isError: boolean;
   errorMessage: string;
@@ -17,6 +19,11 @@ export interface ToDoState {
 
 const initialState: ToDoState = {
   list: [],
+  isOpenModal: false,
+  currentDeletingTask: {
+    index: null,
+    id: null,
+  },
   isLoading: false,
   isError: false,
   errorMessage: '',
@@ -35,6 +42,25 @@ export const ToDoSlice = createSlice({
     },
     refresh: (state) => {
       state.task.title = '';
+    },
+    openModal: (state) => {
+      state.isOpenModal = true;
+    },
+    closeModal: (state) => {
+      state.isOpenModal = false;
+    },
+    setIsDeleting: (state, action: PayloadAction<DeletingTask>) => {
+      state.currentDeletingTask = action.payload;
+      state.list[action.payload.index].isDeleting = true;
+    },
+    cancelIsDeleting: (state) => {
+      if (state.list[state.currentDeletingTask.index].id === state.currentDeletingTask.id) {
+        state.list[state.currentDeletingTask.index].isDeleting = false;
+        state.currentDeletingTask = {
+          index: null,
+          id: null
+        };
+      }
     },
     closeError: (state) => {
       state.isError = false;
@@ -59,5 +85,13 @@ export const ToDoSlice = createSlice({
 
 export const ToDoReducer = ToDoSlice.reducer;
 
-export const {change, refresh, closeError} = ToDoSlice.actions;
+export const {
+  change,
+  refresh,
+  closeError,
+  openModal,
+  closeModal,
+  setIsDeleting,
+  cancelIsDeleting
+} = ToDoSlice.actions;
 
