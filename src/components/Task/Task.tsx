@@ -1,17 +1,25 @@
 import React from 'react';
+import {useDispatch} from 'react-redux';
+import {RootState} from '../../app/store';
+import {changeOldTaskInToDo, deleteTaskFromToDo, fetchToDo} from '../../containers/Layout/ToDoThunks';
 
 interface Props {
+  id: string;
   title: string;
   isDone: boolean;
 }
 
-const MemoTask: React.FC<Props> = React.memo(function Task({title, isDone}) {
-  const handleChange = () => {
-    console.log('change');
+const MemoTask: React.FC<Props> = React.memo(function Task({id, title, isDone}) {
+  const dispatch: RootState = useDispatch();
+
+  const handleChange = async () => {
+    await dispatch(changeOldTaskInToDo(id));
+    dispatch(fetchToDo());
   };
 
-  const handleDelete = () => {
-    console.log('deleting');
+  const handleDelete = async () => {
+    await dispatch(deleteTaskFromToDo(id));
+    dispatch(fetchToDo());
   };
 
   return (

@@ -1,23 +1,46 @@
-import React, {PropsWithChildren} from 'react';
+import React, {ChangeEvent, FormEvent, PropsWithChildren} from 'react';
+import {change, refresh, ToDoState} from './ToDoSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../app/store';
+import {addTaskInToDo, fetchToDo} from './ToDoThunks';
 
 interface Props extends PropsWithChildren {
 
 }
 
 const Layout: React.FC<Props> = ({children}) => {
+  const state: ToDoState = useSelector((state: RootState) => state.toDo);
+  const dispatch: RootState = useDispatch();
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target;
+    dispatch(change(value))
+  }
+
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    await dispatch(addTaskInToDo());
+    dispatch(fetchToDo());
+    dispatch(refresh())
+  }
+
   return (
     <div className="container">
-      <form>
-        <div className="input-group my-3 w-50">
-          <input
-            className="form-control"
-            placeholder="Title"
-          />
-          <button
-            className="btn btn-outline-success"
-            type="button"
-          >Add
-          </button>
+      <form onSubmit={onSubmit}>
+        <div className="my-3 col-12 col-md-6">
+          <div className="input-group ">
+            <input
+              onChange={onChange}
+              value={state.task.title}
+              className="form-control"
+              placeholder="Title"
+            />
+            <button
+              className="btn btn-outline-success"
+              type="submit"
+            >Add
+            </button>
+          </div>
         </div>
       </form>
       <h1>To Do List:</h1>

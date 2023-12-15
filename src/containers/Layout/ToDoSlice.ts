@@ -1,24 +1,36 @@
-import {ActionReducerMapBuilder, createSlice, Draft} from '@reduxjs/toolkit';
-import {ApiTask} from '../../types';
+import {
+  ActionReducerMapBuilder,
+  createSlice,
+  Draft,
+} from '@reduxjs/toolkit';
+import {ApiTask, Task} from '../../types';
 import {fetchToDo} from './ToDoThunks';
 
 
 export interface ToDoState {
   list: ApiTask[];
   isLoading: boolean;
+  task: Task;
 }
 
 const initialState: ToDoState = {
   list: [],
   isLoading: false,
+  task: {
+    title: '',
+    isDone: false,
+  }
 };
 
 export const ToDoSlice = createSlice({
   name: 'toDo',
   initialState,
   reducers: {
-    add: (state) => {
-      // console.log(state);
+    change: (state, action) => {
+      state.task.title = action.payload;
+    },
+    refresh: (state) => {
+      state.task.title = ''
     }
   },
   extraReducers: (builder: ActionReducerMapBuilder<ToDoState>) => {
@@ -37,5 +49,5 @@ export const ToDoSlice = createSlice({
 
 export const ToDoReducer = ToDoSlice.reducer;
 
-export const {add} = ToDoSlice.actions;
+export const {change, refresh} = ToDoSlice.actions;
 
