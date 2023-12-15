@@ -21,7 +21,7 @@ const Layout: React.FC<Props> = ({children}) => {
         </div>
       </form>
       <h1>To Do List:</h1>
-      <div>
+      <div className="d-flex flex-column-reverse gap-2 ">
         {children}
       </div>
     </div>

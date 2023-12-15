@@ -1,8 +1,14 @@
 import {configureStore} from '@reduxjs/toolkit';
+import {ToDoReducer} from '../containers/Layout/ToDoSlice';
 
 export const store = configureStore({
-  reducer: {}
+  reducer: {
+    toDo: ToDoReducer
+  }
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+
+
