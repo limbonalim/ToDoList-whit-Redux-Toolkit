@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {ReactNode, useEffect, useState} from 'react';
+import {JSX, ReactNode, useEffect, useState} from 'react';
 import {Alert, CircularProgress} from '@mui/material';
 import Layout from './containers/Layout/Layout';
 import MemoTask from './components/Task/Task';
@@ -39,12 +39,18 @@ const App = () => {
     >{state.errorMessage}</Alert>
   );
 
+  let list: JSX.Element | ReactNode[] = tasks;
+
+  if (tasks.length === 0) {
+    list = (<p className="text-secondary text-center fs-4">Ops there's nothing</p>);
+  }
+
   return (
     <>
       <DeletingModal></DeletingModal>
       {state.isError ? error : null}
       <Layout>
-        {state.isLoading ? loading : tasks}
+        {state.isLoading ? loading : list}
       </Layout>
     </>
   );
